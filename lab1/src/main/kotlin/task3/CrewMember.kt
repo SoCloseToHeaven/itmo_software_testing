@@ -20,4 +20,6 @@ class CrewMember(
         SobrietyStatus.MID -> DEFAULT_EFFECTIVE_CAPACITY / 2
         SobrietyStatus.DRUNK_AF -> 0
     }
+
+    private fun isSober() = sobrietyStatus == SobrietyStatus.SOBER
 }
