@@ -1,179 +1,161 @@
 package task2
 
-class BTree(private val degree: Int) {
-    private var root: BTreeNode? = null
+class BTree(private val t: Int = 5) {
+    var root: BTreeNode = BTreeNode(true)
+        private set
 
-    inner class BTreeNode(var isLeaf: Boolean) {
-        val keys = mutableListOf<Int>()
-        val children = mutableListOf<BTreeNode>()
-    }
+    fun search(key: Int): Boolean = searchInNode(root, key)
 
-    fun search(key: Int): Boolean {
-        return search(root, key)
-    }
-
-    private fun search(node: BTreeNode?, key: Int): Boolean {
-        if (node == null) return false
+    private fun searchInNode(node: BTreeNode?, key: Int): Boolean {
+        node ?: return false
         var i = 0
         while (i < node.keys.size && key > node.keys[i]) i++
-        if (i < node.keys.size && key == node.keys[i]) return true
-        return if (node.isLeaf) false else search(node.children[i], key)
+        return when {
+            i < node.keys.size && key == node.keys[i] -> true
+            node.isLeaf -> false
+            else -> searchInNode(node.children[i], key)
+        }
     }
 
     fun insert(key: Int) {
-        if (root == null) {
-            root = BTreeNode(true)
-            root!!.keys.add(key)
-        } else {
-            if (root!!.keys.size == 2 * degree - 1) {
-                val newRoot = BTreeNode(false)
-                newRoot.children.add(root!!)
-                splitChild(newRoot, 0)
-                root = newRoot
-            }
-            insertNonFull(root!!, key)
+        if (root.keys.size == 2 * t - 1) {
+            val newRoot = BTreeNode(false)
+            newRoot.children.add(root)
+            root = newRoot
+            splitChild(newRoot, 0)
         }
-    }
-
-    private fun insertNonFull(node: BTreeNode, key: Int) {
-        var i = node.keys.size - 1
-        if (node.isLeaf) {
-            node.keys.add(i + 1, key)
-        } else {
-            while (i >= 0 && key < node.keys[i]) i--
-            i++
-            if (node.children[i].keys.size == 2 * degree - 1) {
-                splitChild(node, i)
-                if (key > node.keys[i]) i++
-            }
-            insertNonFull(node.children[i], key)
-        }
+        insertNonFull(root, key)
     }
 
     private fun splitChild(parent: BTreeNode, index: Int) {
         val child = parent.children[index]
         val newChild = BTreeNode(child.isLeaf)
-        parent.keys.add(index, child.keys[degree - 1])
-        parent.children.add(index + 1, newChild)
-        newChild.keys.addAll(child.keys.subList(degree, 2 * degree - 1))
-        child.keys.subList(degree - 1, 2 * degree - 1).clear()
+        val middleIndex = t - 1
+
+        newChild.keys.addAll(child.keys.subList(middleIndex + 1, child.keys.size))
+        child.keys.subList(middleIndex + 1, child.keys.size).clear()
+
         if (!child.isLeaf) {
-            newChild.children.addAll(child.children.subList(degree, 2 * degree))
-            child.children.subList(degree, 2 * degree).clear()
+            newChild.children.addAll(child.children.subList(middleIndex + 1, child.children.size))
+            child.children.subList(middleIndex + 1, child.children.size).clear()
+        }
+
+        parent.keys.add(index, child.keys.removeAt(middleIndex))
+        parent.children.add(index + 1, newChild)
+    }
+
+    private fun insertNonFull(node: BTreeNode, key: Int) {
+        var i = node.keys.lastIndex
+        when {
+            node.isLeaf -> {
+                while (i >= 0 && key < node.keys[i]) i--
+                node.keys.add(i + 1, key)
+            }
+            else -> {
+                while (i >= 0 && key < node.keys[i]) i--
+                i++
+                if (node.children[i].keys.size == 2 * t - 1) {
+                    splitChild(node, i)
+                    if (key > node.keys[i]) i++
+                }
+                insertNonFull(node.children[i], key)
+            }
         }
     }
 
     fun delete(key: Int) {
-        if (root == null) return
-        delete(root!!, key)
-        if (root!!.keys.isEmpty() && !root!!.isLeaf) {
-            root = root!!.children[0]
+        deleteFromNode(root, key)
+        if (root.keys.isEmpty() && !root.isLeaf) {
+            root = root.children.first()
         }
     }
 
-    private fun delete(node: BTreeNode, key: Int) {
-        val index = findKeyIndex(node, key)
-        if (index < node.keys.size && node.keys[index] == key) {
-            if (node.isLeaf) {
-                node.keys.removeAt(index)
+    private fun deleteFromNode(node: BTreeNode, key: Int): Boolean {
+        val index = node.keys.indexOfFirst { it >= key }
+        val isPresent = index < node.keys.size && node.keys[index] == key
+
+        return when {
+            node.isLeaf -> node.keys.remove(key)
+            isPresent -> deleteInternalNode(node, index)
+            else -> deleteFromChild(node, index)
+        }
+    }
+
+    private fun deleteInternalNode(node: BTreeNode, index: Int): Boolean {
+        val child = node.children[index]
+        return if (child.keys.size >= t) {
+            node.keys[index] = deletePredecessor(child)
+            true
+        } else {
+            val rightChild = node.children[index + 1]
+            if (rightChild.keys.size >= t) {
+                node.keys[index] = deleteSuccessor(child)
+                true
             } else {
-                deleteFromNonLeaf(node, index)
-            }
-        } else {
-            if (node.isLeaf) return
-            val child = node.children[if (index == node.keys.size) index - 1 else index]
-            if (child.keys.size < degree) {
-                fill(node, index)
-            }
-            delete(child, key)
-        }
-    }
-
-    private fun deleteFromNonLeaf(node: BTreeNode, index: Int) {
-        val key = node.keys[index]
-        if (node.children[index].keys.size >= degree) {
-            val pred = getPredecessor(node, index)
-            node.keys[index] = pred
-            delete(node.children[index], pred)
-        } else if (node.children[index + 1].keys.size >= degree) {
-            val succ = getSuccessor(node, index)
-            node.keys[index] = succ
-            delete(node.children[index + 1], succ)
-        } else {
-            merge(node, index)
-            delete(node.children[index], key)
-        }
-    }
-
-    private fun findKeyIndex(node: BTreeNode, key: Int): Int {
-        var i = 0
-        while (i < node.keys.size && key > node.keys[i]) i++
-        return i
-    }
-
-    private fun getPredecessor(node: BTreeNode, index: Int): Int {
-        var current = node.children[index]
-        while (!current.isLeaf) {
-            current = current.children[current.keys.size]
-        }
-        return current.keys.last()
-    }
-
-    private fun getSuccessor(node: BTreeNode, index: Int): Int {
-        var current = node.children[index + 1]
-        while (!current.isLeaf) {
-            current = current.children[0]
-        }
-        return current.keys.first()
-    }
-
-    private fun fill(node: BTreeNode, index: Int) {
-        if (index != 0 && node.children[index - 1].keys.size >= degree) {
-            borrowFromPrev(node, index)
-        } else if (index != node.keys.size && node.children[index + 1].keys.size >= degree) {
-            borrowFromNext(node, index)
-        } else {
-            if (index != node.keys.size) {
-                merge(node, index)
-            } else {
-                merge(node, index - 1)
+                mergeNodes(node, index)
+                deleteFromNode(child, node.keys[index])
             }
         }
     }
 
-    private fun borrowFromPrev(node: BTreeNode, index: Int) {
-        val child = node.children[index]
-        val sibling = node.children[index - 1]
-        child.keys.add(0, node.keys[index - 1])
-        node.keys[index - 1] = sibling.keys.last()
-        if (!child.isLeaf) {
-            child.children.add(0, sibling.children.last())
-            sibling.children.removeAt(sibling.children.size - 1)
-        }
-        sibling.keys.removeAt(sibling.keys.size - 1)
+    private fun deletePredecessor(node: BTreeNode): Int {
+        return if (node.isLeaf) node.keys.removeLast()
+        else deletePredecessor(node.children.last())
     }
 
-    private fun borrowFromNext(node: BTreeNode, index: Int) {
-        val child = node.children[index]
-        val sibling = node.children[index + 1]
-        child.keys.add(node.keys[index])
-        node.keys[index] = sibling.keys.first()
-        if (!child.isLeaf) {
-            child.children.add(sibling.children.first())
-            sibling.children.removeAt(0)
-        }
-        sibling.keys.removeAt(0)
+    private fun deleteSuccessor(node: BTreeNode): Int {
+        return if (node.isLeaf) node.keys.removeFirst()
+        else deleteSuccessor(node.children.first())
     }
 
-    private fun merge(node: BTreeNode, index: Int) {
-        val child = node.children[index]
-        val sibling = node.children[index + 1]
-        child.keys.add(node.keys[index])
-        child.keys.addAll(sibling.keys)
-        if (!child.isLeaf) {
-            child.children.addAll(sibling.children)
+    private fun deleteFromChild(parent: BTreeNode, index: Int): Boolean {
+        val child = parent.children[index]
+        if (child.keys.size < t) {
+            when {
+                index > 0 && parent.children[index - 1].keys.size >= t -> {
+                    borrowFromLeft(parent, index)
+                }
+                index < parent.children.lastIndex && parent.children[index + 1].keys.size >= t -> {
+                    borrowFromRight(parent, index)
+                }
+                else -> {
+                    mergeNodes(parent, if (index > 0) index - 1 else index)
+                }
+            }
         }
-        node.keys.removeAt(index)
-        node.children.removeAt(index + 1)
+        return deleteFromNode(child, parent.keys.getOrNull(index) ?: Int.MAX_VALUE)
+    }
+
+    private fun borrowFromLeft(parent: BTreeNode, index: Int) {
+        val child = parent.children[index]
+        val sibling = parent.children[index - 1]
+
+        child.keys.add(0, parent.keys[index - 1])
+        parent.keys[index - 1] = sibling.keys.removeLast()
+
+        if (!child.isLeaf) {
+            child.children.add(0, sibling.children.removeLast())
+        }
+    }
+
+    private fun borrowFromRight(parent: BTreeNode, index: Int) {
+        val child = parent.children[index]
+        val sibling = parent.children[index + 1]
+
+        child.keys.add(parent.keys[index])
+        parent.keys[index] = sibling.keys.removeFirst()
+
+        if (!child.isLeaf) {
+            child.children.add(sibling.children.removeFirst())
+        }
+    }
+
+    private fun mergeNodes(parent: BTreeNode, index: Int) {
+        val left = parent.children[index]
+        val right = parent.children.removeAt(index + 1)
+
+        left.keys.add(parent.keys.removeAt(index))
+        left.keys.addAll(right.keys)
+        left.children.addAll(right.children)
     }
 }

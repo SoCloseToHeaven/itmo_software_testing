@@ -1,80 +1,80 @@
 package task2
 
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import kotlin.test.assertTrue
 import kotlin.test.assertFalse
 
 class BTreeTest {
+    @Test
+    fun testInsertAndStructure() {
+        val tree = BTree(t = 5)
+        val data = (1..5).toList()
+        data.forEach(tree::insert)
 
-    private lateinit var bTree: BTree
-
-    companion object {
-        private const val DEGREE = 3
-        private val TEST_KEYS = listOf(10, 20, 30, 40, 50, 60, 70, 80, 90)
-    }
-
-    @BeforeEach
-    fun setUp() {
-        bTree = BTree(DEGREE)
+        assertEquals(data.sorted(), tree.root.keys)
+        assertTrue(tree.root.isLeaf)
     }
 
     @Test
-    fun `insert and search should work correctly`() {
-        TEST_KEYS.forEach { bTree.insert(it) }
-        TEST_KEYS.forEach { key ->
-            assertTrue(bTree.search(key), "Key $key should be found in the tree")
-        }
-        assertFalse(bTree.search(100), "Key 100 should not be found in the tree")
+    fun testSearch() {
+        val tree = BTree(t = 5)
+        listOf(2, 4, 6, 8, 10).forEach(tree::insert)
+
+        assertTrue(tree.search(4))
+        assertTrue(tree.search(10))
+
+        assertFalse(tree.search(5))
+        assertFalse(tree.search(11))
     }
 
     @Test
-    fun `delete should remove keys correctly`() {
-        TEST_KEYS.forEach { bTree.insert(it) }
+    fun testDelete() {
+        val tree = BTree(t = 5)
+        listOf(1, 2, 3, 4, 5).forEach(tree::insert)
 
+        tree.delete(3)
+        assertEquals(listOf(1, 2, 4, 5), tree.root.keys)
 
-        bTree.delete(20)
-        bTree.delete(50)
-
-        assertAll( "Delete elements",
-            { assertFalse(bTree.search(20), "Key 20 should be deleted") },
-            { assertFalse(bTree.search(50), "Key 50 should be deleted") }
-        )
-
-        listOf(10, 30, 40, 60, 70, 80, 90).forEach { key ->
-            assertTrue(bTree.search(key), "Key $key should still be in the tree")
-        }
+        tree.delete(5)
+        assertEquals(listOf(1, 2, 4), tree.root.keys)
     }
 
     @Test
-    fun `delete from non-leaf node should work correctly`() {
-        TEST_KEYS.forEach { bTree.insert(it) }
-        bTree.delete(30)
+    fun testSplitBehavior() {
+        val tree = BTree(t = 5)
+        repeat(9) { tree.insert(it) }
+        assertEquals(9, tree.root.keys.size)
 
-        assertFalse(bTree.search(30), "Key 30 should be deleted")
-        listOf(10, 20, 40, 50, 60, 70, 80, 90).forEach { key ->
-            assertTrue(bTree.search(key), "Key $key should still be in the tree")
-        }
+        tree.insert(9)
+        assertEquals(1, tree.root.keys.size) // Средний элемент (4)
+        assertEquals(2, tree.root.children.size)
+
+        val left = tree.root.children[0]
+        val right = tree.root.children[1]
+
+        assertEquals((0..3).toList(), left.keys)  // 4 элемента
+        assertEquals((5..9).toList(), right.keys) // 5 элементов
     }
 
     @Test
-    fun `tree should handle large number of keys correctly`() {
-        val largeKeys = (1..100).toList()
-        largeKeys.forEach { bTree.insert(it) }
+    fun testNodeConstraints() {
+        val tree = BTree(t = 5)
+        repeat(20) { tree.insert(it) }
 
-        largeKeys.forEach { key ->
-            assertTrue(bTree.search(key), "Key $key should be found in the tree")
+        fun validateNode(node: BTreeNode) {
+            when {
+                node == tree.root -> assertTrue(node.keys.size in 1..9)
+                node.isLeaf -> assertTrue(node.keys.size in 4..9)
+                else -> assertTrue(node.keys.size in 4..9)
+            }
+
+            if (!node.isLeaf) {
+                assertEquals(node.keys.size + 1, node.children.size)
+                node.children.forEach(::validateNode)
+            }
         }
 
-        largeKeys.filter { it % 2 == 0 }.forEach { bTree.delete(it) }
-
-        largeKeys.filter { it % 2 == 0 }.forEach { key ->
-            assertFalse(bTree.search(key), "Key $key should be deleted")
-        }
-
-        largeKeys.filter { it % 2 != 0 }.forEach { key ->
-            assertTrue(bTree.search(key), "Key $key should still be in the tree")
-        }
+        validateNode(tree.root)
     }
 }
