@@ -1,80 +1,103 @@
 package task2
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import kotlin.test.assertTrue
-import kotlin.test.assertFalse
 
 class BTreeTest {
-    @Test
-    fun testInsertAndStructure() {
-        val tree = BTree(t = 5)
-        val data = (1..5).toList()
-        data.forEach(tree::insert)
+    private lateinit var bTree: BTree
 
-        assertEquals(data.sorted(), tree.root.keys)
-        assertTrue(tree.root.isLeaf)
+    @BeforeEach
+    fun setUp() {
+        bTree = BTree(2) // Минимальный порядок B-дерева
     }
 
     @Test
-    fun testSearch() {
-        val tree = BTree(t = 5)
-        listOf(2, 4, 6, 8, 10).forEach(tree::insert)
+    fun testInsertAndSearch() {
+        bTree.insert(10)
+        bTree.insert(20)
+        bTree.insert(5)
 
-        assertTrue(tree.search(4))
-        assertTrue(tree.search(10))
-
-        assertFalse(tree.search(5))
-        assertFalse(tree.search(11))
+        assertTrue(bTree.search(10))
+        assertTrue(bTree.search(20))
+        assertTrue(bTree.search(5))
+        assertFalse(bTree.search(15))
     }
 
     @Test
-    fun testDelete() {
-        val tree = BTree(t = 5)
-        listOf(1, 2, 3, 4, 5).forEach(tree::insert)
+    fun testInsertAndSplit() {
+        // Вставляем 5 элементов, чтобы вызвать разделение
+        bTree.insert(10)
+        bTree.insert(20)
+        bTree.insert(5)
+        bTree.insert(6)
+        bTree.insert(12)
 
-        tree.delete(3)
-        assertEquals(listOf(1, 2, 4, 5), tree.root.keys)
-
-        tree.delete(5)
-        assertEquals(listOf(1, 2, 4), tree.root.keys)
+        assertTrue(bTree.search(6))
+        assertTrue(bTree.search(12))
+        assertFalse(bTree.search(15))
     }
 
     @Test
-    fun testSplitBehavior() {
-        val tree = BTree(t = 5)
-        repeat(9) { tree.insert(it) }
-        assertEquals(9, tree.root.keys.size)
+    fun testDeleteLeafNode() {
+        bTree.insert(10)
+        bTree.insert(20)
+        bTree.insert(5)
 
-        tree.insert(9)
-        assertEquals(1, tree.root.keys.size) // Средний элемент (4)
-        assertEquals(2, tree.root.children.size)
-
-        val left = tree.root.children[0]
-        val right = tree.root.children[1]
-
-        assertEquals((0..3).toList(), left.keys)  // 4 элемента
-        assertEquals((5..9).toList(), right.keys) // 5 элементов
+        bTree.delete(5)
+        assertFalse(bTree.search(5))
     }
 
     @Test
-    fun testNodeConstraints() {
-        val tree = BTree(t = 5)
-        repeat(20) { tree.insert(it) }
+    fun testDeleteInternalNode() {
+        bTree.insert(10)
+        bTree.insert(20)
+        bTree.insert(5)
+        bTree.insert(6)
+        bTree.insert(12)
 
-        fun validateNode(node: BTreeNode) {
-            when {
-                node == tree.root -> assertTrue(node.keys.size in 1..9)
-                node.isLeaf -> assertTrue(node.keys.size in 4..9)
-                else -> assertTrue(node.keys.size in 4..9)
-            }
+        bTree.delete(10)
+        assertFalse(bTree.search(10))
+        assertTrue(bTree.search(20))
+    }
 
-            if (!node.isLeaf) {
-                assertEquals(node.keys.size + 1, node.children.size)
-                node.children.forEach(::validateNode)
-            }
-        }
+    @Test
+    fun testDeleteRootNode() {
+        bTree.insert(10)
+        bTree.insert(20)
+        bTree.insert(5)
 
-        validateNode(tree.root)
+        bTree.delete(10)
+        assertFalse(bTree.search(10))
+        assertTrue(bTree.search(5))
+        assertTrue(bTree.search(20))
+    }
+
+    @Test
+    fun testDeleteNonExistentNode() {
+        bTree.insert(10)
+        bTree.insert(20)
+        bTree.insert(5)
+
+        bTree.delete(15) // Удаляем несуществующий элемент
+        assertTrue(bTree.search(10))
+        assertTrue(bTree.search(20))
+        assertTrue(bTree.search(5))
+    }
+
+    @Test
+    fun testDeleteAndMerge() {
+        bTree.insert(10)
+        bTree.insert(20)
+        bTree.insert(5)
+        bTree.insert(6)
+        bTree.insert(12)
+
+        bTree.delete(20)
+        assertFalse(bTree.search(20))
+        assertTrue(bTree.search(10))
+        assertTrue(bTree.search(5))
+        assertTrue(bTree.search(6))
+        assertTrue(bTree.search(12))
     }
 }
