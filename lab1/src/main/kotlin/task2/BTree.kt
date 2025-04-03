@@ -63,12 +63,7 @@ class BTree(private val t: Int = 5) {
         }
     }
 
-    fun delete(key: Int) {
-        deleteFromNode(root, key)
-        if (root.keys.isEmpty() && !root.isLeaf) {
-            root = root.children.first()
-        }
-    }
+    fun delete(key: Int) = deleteFromNode(root, key)
 
     private fun deleteFromNode(node: BTreeNode, key: Int): Boolean {
         val index = node.keys.indexOfFirst { it >= key }
@@ -92,19 +87,20 @@ class BTree(private val t: Int = 5) {
 
     private fun deleteInternalNode(node: BTreeNode, index: Int): Boolean {
         val child = node.children[index]
-        return if (child.keys.size >= t) {
+
+        if (child.keys.size >= t) {
             node.keys[index] = deletePredecessor(child)
-            true
-        } else {
-            val rightChild = node.children[index + 1]
-            if (rightChild.keys.size >= t) {
-                node.keys[index] = deleteSuccessor(child)
-                true
-            } else {
-                mergeNodes(node, index)
-                deleteFromNode(child, node.keys[index])
-            }
+            return true
         }
+
+        val rightChild = node.children[index + 1]
+        if (rightChild.keys.size >= t) {
+            node.keys[index] = deleteSuccessor(child)
+            return true
+        }
+
+        mergeNodes(node, index)
+        return deleteFromNode(child, node.keys[index])
     }
 
     private fun deletePredecessor(node: BTreeNode): Int {
@@ -117,48 +113,11 @@ class BTree(private val t: Int = 5) {
         else deleteSuccessor(node.children.first())
     }
 
-    private fun fillChild(parent: BTreeNode, index: Int) {
-
-        when {
-            index > 0 && parent.children[index - 1].keys.size >= t -> {
-                borrowFromLeft(parent, index)
-            }
-            index < parent.children.lastIndex && parent.children[index + 1].keys.size >= t -> {
-                borrowFromRight(parent, index)
-            }
-            else -> {
-                if (index > 0) {
-                    mergeNodes(parent, index - 1)
-                } else {
-                    mergeNodes(parent, index)
-                }
-            }
-        }
+    private fun fillChild(parent: BTreeNode, index: Int) = when {
+            index > 0 -> mergeNodes(parent, index - 1)
+            else  -> mergeNodes(parent, index)
     }
 
-    private fun borrowFromLeft(parent: BTreeNode, index: Int) {
-        val child = parent.children[index]
-        val sibling = parent.children[index - 1]
-
-        child.keys.add(0, parent.keys[index - 1])
-        parent.keys[index - 1] = sibling.keys.removeLast()
-
-        if (!child.isLeaf) {
-            child.children.add(0, sibling.children.removeLast())
-        }
-    }
-
-    private fun borrowFromRight(parent: BTreeNode, index: Int) {
-        val child = parent.children[index]
-        val sibling = parent.children[index + 1]
-
-        child.keys.add(parent.keys[index])
-        parent.keys[index] = sibling.keys.removeFirst()
-
-        if (!child.isLeaf) {
-            child.children.add(sibling.children.removeFirst())
-        }
-    }
 
     private fun mergeNodes(parent: BTreeNode, index: Int) {
         val left = parent.children[index]
