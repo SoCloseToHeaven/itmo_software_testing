@@ -1,7 +1,6 @@
 package task2
 
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -73,7 +72,7 @@ class BTreeTest {
 
     @Test
     fun `test delete from internal node with enough children`() {
-        val bTree = BTree(2) // Уменьшаем t для упрощения теста
+        val bTree = BTree(2)
         for (i in 1..5) {
             bTree.insert(i)
         }
@@ -87,7 +86,7 @@ class BTreeTest {
 
     @Test
     fun `test delete from internal node with not enough children`() {
-        val bTree = BTree(2) // Уменьшаем t для упрощения теста
+        val bTree = BTree(2)
         for (i in 1..3) {
             bTree.insert(i)
         }
@@ -116,23 +115,19 @@ class BTreeTest {
 
     @Test
     fun `test delete from internal node`() {
-        val bTree = BTree(2) // Уменьшаем t для упрощения теста
+        val bTree = BTree(2)
         bTree.insert(1)
         bTree.insert(2)
         bTree.insert(3)
         bTree.insert(4)
         bTree.insert(5)
 
-        // Убедимся, что ключ 3 находится в внутреннем узле
         assertTrue(bTree.search(3))
 
-        // Удалим ключ 3
         bTree.delete(3)
 
-        // Проверим, что ключ 3 удален
         assertFalse(bTree.search(3))
 
-        // Проверим, что остальные ключи остались
         assertTrue(bTree.search(1))
         assertTrue(bTree.search(2))
         assertTrue(bTree.search(4))
@@ -162,7 +157,7 @@ class BTreeTest {
 
     @Test
     fun `test delete from root`() {
-        val bTree = BTree(2) // Уменьшаем t для упрощения теста
+        val bTree = BTree(2)
         for (i in 1..10) {
             bTree.insert(i)
         }

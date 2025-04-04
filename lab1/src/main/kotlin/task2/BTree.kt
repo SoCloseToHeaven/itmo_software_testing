@@ -74,12 +74,13 @@ class BTree(private val t: Int = 5) {
             node.isLeaf -> false
             isPresent -> deleteInternalNode(node, index)
             else -> {
-                val childIndex = if (index != -1) index else node.children.size - 1
+                val childIndex = if (index != -1) index else (node.children.size - 1)
                 val child = node.children[childIndex]
 
                 if (child.keys.size < t) {
                     fillChild(node, childIndex)
                 }
+
                 deleteFromNode(node.children[childIndex], key)
             }
         }
@@ -87,6 +88,7 @@ class BTree(private val t: Int = 5) {
 
     private fun deleteInternalNode(node: BTreeNode, index: Int): Boolean {
         val child = node.children[index]
+        val key = node.keys[index]
 
         if (child.keys.size >= t) {
             node.keys[index] = deletePredecessor(child)
@@ -100,7 +102,7 @@ class BTree(private val t: Int = 5) {
         }
 
         mergeNodes(node, index)
-        return deleteFromNode(child, node.keys[index])
+        return deleteFromNode(child, key)
     }
 
     private fun deletePredecessor(node: BTreeNode): Int {
