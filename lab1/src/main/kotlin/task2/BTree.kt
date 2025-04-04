@@ -90,11 +90,6 @@ class BTree(private val t: Int = 5) {
         val child = node.children[index]
         val key = node.keys[index]
 
-        if (child.keys.size >= t) {
-            node.keys[index] = deletePredecessor(child)
-            return true
-        }
-
         val rightChild = node.children[index + 1]
         if (rightChild.keys.size >= t) {
             node.keys[index] = deleteSuccessor(child)
@@ -103,11 +98,6 @@ class BTree(private val t: Int = 5) {
 
         mergeNodes(node, index)
         return deleteFromNode(child, key)
-    }
-
-    private fun deletePredecessor(node: BTreeNode): Int {
-        return if (node.isLeaf) node.keys.removeLast()
-        else deletePredecessor(node.children.last())
     }
 
     private fun deleteSuccessor(node: BTreeNode): Int {

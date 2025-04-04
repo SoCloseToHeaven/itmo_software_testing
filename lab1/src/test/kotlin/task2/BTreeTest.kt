@@ -169,4 +169,19 @@ class BTreeTest {
 
         assertFalse(bTree.search(4))
     }
+
+    @Test
+    fun `test delete with merging children`() {
+        val bTree = BTree(2)
+        for (i in 1..20) {
+            bTree.insert(i)
+        }
+
+        assertTrue(bTree.root.keys.isNotEmpty())
+        assertTrue(bTree.root.children.isNotEmpty())
+
+        bTree.delete(4)
+
+        assertFalse(bTree.search(4))
+    }
 }
