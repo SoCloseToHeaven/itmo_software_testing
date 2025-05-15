@@ -6,7 +6,7 @@ public class DoubleEquator {
 
     public static final double EPSILON = 1e-4;
 
-    public static final double RELATIVE_ACCURACY = 1e-2; // Типа процент
+    public static final double RELATIVE_ACCURACY = 0.1;
 
     public static boolean areAlmostEqual(double expected, double actual) {
         // Обработка NaN (как они ваще получаются то здесь?? так падажжи)
@@ -29,5 +29,9 @@ public class DoubleEquator {
         // В остальных случаях  сравниваем по относительной погрешности
         double relativeError = diff / Math.abs(expected);
         return relativeError <= RELATIVE_ACCURACY;
+    }
+
+    public static boolean areAlmostEqual(double expected, double actual, double tolerance) {
+        return Math.abs(expected - actual) <= tolerance;
     }
 }

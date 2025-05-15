@@ -38,13 +38,6 @@ public class Application {
         CsvWriter csvWriter = new CsvWriter(sec, tan, csc, sin, cos, cot, system);
 
         csvWriter.printCsv(arguments, accuracy);
-
-        double cosx = cos.compute(-5.49778, accuracy);
-        double sinx = sin.compute(-5.49778, accuracy);
-
-        System.out.println(cosx);
-        System.out.println(sinx);
-        System.out.println(cosx - sinx);
     }
 
 }

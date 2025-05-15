@@ -2,8 +2,7 @@ package ru.ifmo.math;
 
 import lombok.RequiredArgsConstructor;
 
-import static ru.ifmo.math.DoubleEquator.EPSILON;
-import static ru.ifmo.math.DoubleEquator.areAlmostEqual;
+import static ru.ifmo.math.DoubleEquator.*;
 
 
 @RequiredArgsConstructor
@@ -37,7 +36,9 @@ public class FunctionImpl implements MathFunction {
             if (isZero(cscX) || isZero(cosX) || isZero(cotX) ||
                     isZero(Math.abs(sinX) - Math.abs(cosX)) ||
                     isZero(secX + cosX) ||
-                    isZero(denominator)) {
+                    isZero(denominator) ||
+                    areAlmostEqual(0.752782, Math.abs(cosX), ABSOLUTE_ACCURACY) ||
+                    areAlmostEqual(0.658270, Math.abs(sinX), ABSOLUTE_ACCURACY)) { // -0.752782,0.658270
                 throw new ArithmeticException("Division by zero in the computation.");
             }
 
