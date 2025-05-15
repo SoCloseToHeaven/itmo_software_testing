@@ -1,5 +1,6 @@
 package ru.ifmo;
 
+import ru.ifmo.math.DoubleEquator;
 import ru.ifmo.math.FunctionImpl;
 import ru.ifmo.math.logarithm.Ln;
 import ru.ifmo.math.trigonometry.*;
@@ -37,6 +38,13 @@ public class Application {
         CsvWriter csvWriter = new CsvWriter(sec, tan, csc, sin, cos, cot, system);
 
         csvWriter.printCsv(arguments, accuracy);
+
+        double cosx = cos.compute(-5.49778, accuracy);
+        double sinx = sin.compute(-5.49778, accuracy);
+
+        System.out.println(cosx);
+        System.out.println(sinx);
+        System.out.println(cosx - sinx);
     }
 
 }

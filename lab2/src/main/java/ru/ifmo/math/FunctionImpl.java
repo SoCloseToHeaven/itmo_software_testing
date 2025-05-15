@@ -2,6 +2,7 @@ package ru.ifmo.math;
 
 import lombok.RequiredArgsConstructor;
 
+import static ru.ifmo.math.DoubleEquator.EPSILON;
 import static ru.ifmo.math.DoubleEquator.areAlmostEqual;
 
 
@@ -15,8 +16,6 @@ public class FunctionImpl implements MathFunction {
     private final MathFunction cot;
 
     private final MathFunction ln;
-
-    private static final double EPSILON = 1e-10; // Погрешность для сравнения
 
     private boolean isZero(double value) {
         return Math.abs(value) < EPSILON;
@@ -36,7 +35,7 @@ public class FunctionImpl implements MathFunction {
 
             // Тут смотрим ниче ли в знаменателях не случилосьТ
             if (isZero(cscX) || isZero(cosX) || isZero(cotX) ||
-                    isZero(sinX - (cosX * (cscX * cosX))) ||
+                    isZero(Math.abs(sinX) - Math.abs(cosX)) ||
                     isZero(secX + cosX) ||
                     isZero(denominator)) {
                 throw new ArithmeticException("Division by zero in the computation.");

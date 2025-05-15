@@ -4,6 +4,8 @@ public class DoubleEquator {
 
     public static final double ABSOLUTE_ACCURACY = 1e-6;
 
+    public static final double EPSILON = 1e-4;
+
     public static final double RELATIVE_ACCURACY = 1e-2; // Типа процент
 
     public static boolean areAlmostEqual(double expected, double actual) {
@@ -13,15 +15,15 @@ public class DoubleEquator {
         }
 
         // Если оба числа нули (с учетом погрешности)
-        if (Math.abs(expected) <= ABSOLUTE_ACCURACY && Math.abs(actual) <= ABSOLUTE_ACCURACY) {
+        if (Math.abs(expected) <= EPSILON && Math.abs(actual) <= EPSILON) {
             return true;
         }
 
         double diff = Math.abs(expected - actual);
 
         // Если числа очень маленькие сравниваем по абсолютной погрешности
-        if (Math.abs(expected) < ABSOLUTE_ACCURACY) {
-            return diff <= ABSOLUTE_ACCURACY;
+        if (Math.abs(expected) < EPSILON) {
+            return diff <= EPSILON;
         }
 
         // В остальных случаях  сравниваем по относительной погрешности
