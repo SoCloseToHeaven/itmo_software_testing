@@ -38,6 +38,12 @@ public class Application {
         CsvWriter csvWriter = new CsvWriter(sec, tan, csc, sin, cos, cot, system);
 
         csvWriter.printCsv(arguments, accuracy);
+
+        csvWriter.writeToCsv("tan.csv", tan, -10, 10, 0.1);
+        csvWriter.writeToCsv("cos.csv", cos, -10, 10, 0.1);
+        csvWriter.writeToCsv("sec.csv", sec, -10, 10, 0.1);
+        csvWriter.writeToCsv("ln.csv", ln, -10, 10, 0.1);
+        csvWriter.writeToCsv("func.csv", system, -10, 10, 0.0001);
     }
 
 }

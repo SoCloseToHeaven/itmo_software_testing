@@ -4,6 +4,8 @@ import ru.ifmo.math.FunctionImpl;
 import ru.ifmo.math.MathFunction;
 import ru.ifmo.math.trigonometry.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 public class CsvWriter {
@@ -42,6 +44,23 @@ public class CsvWriter {
 
             System.out.printf("%f,%f,%f,%f,%f,%f,%f,%f%n",
                     x, value, cosVal, sinVal, tanVal, cotVal, secVal, cscVal);
+        }
+    }
+
+    public void writeToCsv(String filename, MathFunction function, final double start,
+                           final double end, final double step)
+            throws IOException {
+
+        try (FileWriter writer = new FileWriter("artifacts/"+filename)) {
+            for (double i = start; i < end; i+=step) {
+                double result;
+                try {
+                    result = function.compute(i, 0.001);
+                } catch (Exception e) {
+                    result = Double.NaN;
+                }
+                writer.write(i + "," + result + "\n");
+            }
         }
     }
 }
