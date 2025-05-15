@@ -2,7 +2,7 @@ package ru.ifmo.math;
 
 public class DoubleEquator {
 
-    public static final double ABSOLUTE_ACCURACY = 1e-4;
+    public static final double ABSOLUTE_ACCURACY = 1e-6;
 
     public static final int RELATIVE_ACCURACY = 2;
 

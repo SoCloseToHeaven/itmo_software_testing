@@ -2,6 +2,8 @@ package ru.ifmo.math;
 
 import lombok.RequiredArgsConstructor;
 
+import static ru.ifmo.math.DoubleEquator.areAlmostEqual;
+
 
 @RequiredArgsConstructor
 public class FunctionImpl implements MathFunction {
