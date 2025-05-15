@@ -32,11 +32,13 @@ public class FunctionImpl implements MathFunction {
             double cosX = cos.compute(x, accuracy);
             double cotX = cot.compute(x, accuracy);
 
-            // Проверка на ноль в знаменателях
+            double denominator = (secX + cotX) + (secX - (cscX + secX));
+
+            // Тут смотрим ниче ли в знаменателях не случилосьТ
             if (isZero(cscX) || isZero(cosX) || isZero(cotX) ||
                     isZero(sinX - (cosX * (cscX * cosX))) ||
                     isZero(secX + cosX) ||
-                    isZero((secX + cotX) + (secX - (cscX + secX)))) {
+                    isZero(denominator)) {
                 throw new ArithmeticException("Division by zero in the computation.");
             }
 
@@ -50,9 +52,10 @@ public class FunctionImpl implements MathFunction {
             double part7 = sinX / (sinX - (cosX * (cscX * cosX)));
             double part8 = cotX / sinX;
             double part9 = (tanX / secX) + cscX;
-            double part10 = cscX / ((secX + cotX) + (secX - (cscX + secX)));
+            double part10 = cscX / (denominator);
             double part11 = Math.pow(cscX, 3) + (secX - (sinX + cscX));
             double part12 = (part8 / part9) / (Math.pow(part10, 3) * part11);
+
             double part13 = (part6 - part7) * part12;
             double part14 = (sinX * (cscX * tanX)) / (sinX - cosX);
             double part15 = cotX * Math.pow(part14, 2);

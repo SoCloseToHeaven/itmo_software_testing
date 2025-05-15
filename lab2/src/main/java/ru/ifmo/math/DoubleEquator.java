@@ -4,7 +4,7 @@ public class DoubleEquator {
 
     public static final double ABSOLUTE_ACCURACY = 1e-6;
 
-    public static final int RELATIVE_ACCURACY = 2;
+    public static final double RELATIVE_ACCURACY = 1e-2; // Типа процент
 
     public static boolean areAlmostEqual(double expected, double actual) {
         // Обработка NaN (как они ваще получаются то здесь?? так падажжи)
@@ -12,17 +12,11 @@ public class DoubleEquator {
             return Double.isNaN(expected) && Double.isNaN(actual);
         }
 
-        // Обработка inf
-        if (Double.isInfinite(expected) || Double.isInfinite(actual)) {
-            return expected == actual;
-        }
-
         // Если оба числа нули (с учетом погрешности)
         if (Math.abs(expected) <= ABSOLUTE_ACCURACY && Math.abs(actual) <= ABSOLUTE_ACCURACY) {
             return true;
         }
 
-        // Разница между числами
         double diff = Math.abs(expected - actual);
 
         // Если числа очень маленькие сравниваем по абсолютной погрешности
