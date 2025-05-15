@@ -37,7 +37,6 @@ public class Application {
         CsvWriter csvWriter = new CsvWriter(sec, tan, csc, sin, cos, cot, system);
 
         csvWriter.printCsv(arguments, accuracy);
-
     }
 
 }

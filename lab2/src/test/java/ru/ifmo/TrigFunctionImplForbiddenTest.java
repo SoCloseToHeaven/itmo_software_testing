@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import ru.ifmo.math.FunctionImpl;
 import ru.ifmo.math.logarithm.Ln;
-import ru.ifmo.math.logarithm.Log;
 import ru.ifmo.math.trigonometry.*;
 import ru.ifmo.utils.TrigTableDTO;
 import ru.ifmo.reader.CsvReader;

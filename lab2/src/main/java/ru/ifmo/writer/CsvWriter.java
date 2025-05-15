@@ -4,8 +4,6 @@ import ru.ifmo.math.FunctionImpl;
 import ru.ifmo.math.MathFunction;
 import ru.ifmo.math.trigonometry.*;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 public class CsvWriter {
@@ -31,10 +29,8 @@ public class CsvWriter {
     }
 
     public void printCsv(List<Double> arguments, double accuracy) {
-        // Print CSV header
         System.out.println("argument,value,cos,sin,tan,cot,sec,csc");
 
-        // Print data rows
         for (double x : arguments) {
             double cosVal = cos.compute(x, accuracy);
             double sinVal = sin.compute(x, accuracy);
