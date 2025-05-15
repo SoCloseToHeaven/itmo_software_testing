@@ -15,6 +15,7 @@ import ru.ifmo.reader.CsvReader;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
+import static ru.ifmo.math.DoubleEquator.ABSOLUTE_ACCURACY;
 
 
 import java.util.ArrayList;
@@ -25,8 +26,6 @@ import java.util.stream.Stream;
 public class TrigFunctionImplForbiddenTest {
 
     private static final List<TrigTableDTO> invalidValueList = new ArrayList<>();
-
-    private static final double accuracy = 0.00001;
 
     @BeforeAll
     static void buildValueList() {
@@ -58,13 +57,13 @@ public class TrigFunctionImplForbiddenTest {
 
         Ln ln = new Ln();
 
-        when(cos.compute(pointDTO.getArgument(), accuracy)).thenAnswer(invocation -> pointDTO.getCosValue());
-        when(sin.compute(pointDTO.getArgument(), accuracy)).thenAnswer(invocation -> pointDTO.getSinValue());
-        when(sec.compute(pointDTO.getArgument(), accuracy)).thenAnswer(invocation -> pointDTO.getSecValue());
+        when(cos.compute(pointDTO.getArgument(), ABSOLUTE_ACCURACY)).thenAnswer(invocation -> pointDTO.getCosValue());
+        when(sin.compute(pointDTO.getArgument(), ABSOLUTE_ACCURACY)).thenAnswer(invocation -> pointDTO.getSinValue());
+        when(sec.compute(pointDTO.getArgument(), ABSOLUTE_ACCURACY)).thenAnswer(invocation -> pointDTO.getSecValue());
 
         FunctionImpl system = new FunctionImpl(sec, tan, csc, sin, cos, cot, ln);
 
-        assertThrows(ArithmeticException.class, () -> system.compute(pointDTO.getArgument(), accuracy));
+        assertThrows(ArithmeticException.class, () -> system.compute(pointDTO.getArgument(), ABSOLUTE_ACCURACY));
     }
 
     @ParameterizedTest
@@ -81,12 +80,12 @@ public class TrigFunctionImplForbiddenTest {
 
         Ln ln = new Ln();
 
-        when(cos.compute(pointDTO.getArgument(), accuracy)).thenAnswer(invocation -> pointDTO.getCosValue());
-        when(cos.compute(pointDTO.getArgument() - Math.PI / 2, accuracy)).thenAnswer(invocation -> pointDTO.getSinValue());
+        when(cos.compute(pointDTO.getArgument(), ABSOLUTE_ACCURACY)).thenAnswer(invocation -> pointDTO.getCosValue());
+        when(cos.compute(pointDTO.getArgument() - Math.PI / 2, ABSOLUTE_ACCURACY)).thenAnswer(invocation -> pointDTO.getSinValue());
 
         FunctionImpl system = new FunctionImpl(sec, tan, csc, sin, cos, cot, ln);
 
-        assertThrows(ArithmeticException.class, () -> system.compute(pointDTO.getArgument(), accuracy));
+        assertThrows(ArithmeticException.class, () -> system.compute(pointDTO.getArgument(), ABSOLUTE_ACCURACY));
     }
 
     @ParameterizedTest
@@ -105,7 +104,7 @@ public class TrigFunctionImplForbiddenTest {
 
         FunctionImpl system = new FunctionImpl(sec, tan, csc, sin, cos, cot, ln);
 
-        assertThrows(ArithmeticException.class, () -> system.compute(pointDTO.getArgument(), accuracy));
+        assertThrows(ArithmeticException.class, () -> system.compute(pointDTO.getArgument(), ABSOLUTE_ACCURACY));
     }
 
 }

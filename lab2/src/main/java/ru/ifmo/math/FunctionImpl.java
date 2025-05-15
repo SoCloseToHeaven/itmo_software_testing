@@ -2,6 +2,7 @@ package ru.ifmo.math;
 
 import lombok.RequiredArgsConstructor;
 
+
 @RequiredArgsConstructor
 public class FunctionImpl implements MathFunction {
     private final MathFunction sec;
@@ -13,6 +14,12 @@ public class FunctionImpl implements MathFunction {
 
     private final MathFunction ln;
 
+    private static final double EPSILON = 1e-10; // Погрешность для сравнения
+
+    private boolean isZero(double value) {
+        return Math.abs(value) < EPSILON;
+    }
+
     @Override
     public double compute(double x, double accuracy) {
         if (x <= 0) {
@@ -22,6 +29,14 @@ public class FunctionImpl implements MathFunction {
             double sinX = sin.compute(x, accuracy);
             double cosX = cos.compute(x, accuracy);
             double cotX = cot.compute(x, accuracy);
+
+            // Проверка на ноль в знаменателях
+            if (isZero(cscX) || isZero(cosX) || isZero(cotX) ||
+                    isZero(sinX - (cosX * (cscX * cosX))) ||
+                    isZero(secX + cosX) ||
+                    isZero((secX + cotX) + (secX - (cscX + secX)))) {
+                throw new ArithmeticException("Division by zero in the computation.");
+            }
 
             double part1 = (((((cscX - sinX) - cosX) * cosX) * tanX) / cscX) / (cosX - (sinX / cotX));
             double part2 = Math.pow(part1, 3) * (cosX * cotX) / secX;
@@ -45,8 +60,8 @@ public class FunctionImpl implements MathFunction {
             return result;
         }
 
-
         return ln.compute(x, accuracy);
-
     }
+
+
 }
