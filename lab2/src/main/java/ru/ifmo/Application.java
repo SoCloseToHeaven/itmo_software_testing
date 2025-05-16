@@ -43,7 +43,7 @@ public class Application {
         csvWriter.writeToCsv("cos.csv", cos, -10, 10, 0.1);
         csvWriter.writeToCsv("sec.csv", sec, -10, 10, 0.1);
         csvWriter.writeToCsv("ln.csv", ln, -10, 10, 0.1);
-        csvWriter.writeToCsv("func.csv", system, -10, 10, 0.0001);
+        csvWriter.writeToCsv("func.csv", system, -10, 10, 0.001);
     }
 
 }
