@@ -40,6 +40,9 @@ public class Application {
         csvWriter.printCsv(arguments, accuracy);
 
         csvWriter.writeToCsv("tan.csv", tan, -10, 10, 0.1);
+        csvWriter.writeToCsv("sin.csv", sin, -10, 10, 0.1);
+        csvWriter.writeToCsv("csc.csv", csc, -10, 10, 0.1);
+        csvWriter.writeToCsv("cot.csv", cot, -10, 10, 0.1);
         csvWriter.writeToCsv("cos.csv", cos, -10, 10, 0.1);
         csvWriter.writeToCsv("sec.csv", sec, -10, 10, 0.1);
         csvWriter.writeToCsv("ln.csv", ln, -10, 10, 0.1);
