@@ -5,6 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -12,10 +13,8 @@ import java.util.List;
 
 public abstract class AbstractPage implements Page {
 
-    public static final String BASE_URI = "https://www.holodilnik.ru";
-
     protected final WebDriver driver;
-    protected final WebDriverWait wait;
+    protected final Wait<WebDriver> wait;
 
     public AbstractPage(WebDriver webDriver) {
         this.driver = webDriver;

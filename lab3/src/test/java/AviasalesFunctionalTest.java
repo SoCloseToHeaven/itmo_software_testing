@@ -3,12 +3,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.openqa.selenium.WebDriver;
-import page.AbstractPage;
 import page.MainPage;
 
-public class XolodilnikFunctionalTest {
-
-    private static final String BASE_URL = AbstractPage.BASE_URI;
+public class AviasalesFunctionalTest {
 
     @ParameterizedTest
     @EnumSource(BrowserDriver.class)
