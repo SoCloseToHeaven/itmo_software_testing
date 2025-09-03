@@ -160,7 +160,7 @@ public class AviasalesFunctionalTest {
         }
     }
 
-    // Test case 8: Load favourites page and test navigation by pop up button
+    // Test case 8: Login via vk and check it in settings
     @ParameterizedTest()
     @EnumSource(BrowserDriver.class)
     public void loginViaVkAndPersonalize(BrowserDriver browserDriver) {
