@@ -2,6 +2,7 @@ import driver.BrowserDriver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import page.BookingPage;
 import page.LongStoryShortPage;
@@ -115,6 +116,26 @@ public class AviasalesFunctionalTest {
             lssPage.search(DEFAULT_CITIES[0]);
 
             lssPage.clickOnSearchResultCity("LED");
+        } finally {
+            driver.quit();
+        }
+    }
+
+    // Test case 4: Long story short search place
+    @ParameterizedTest()
+    @EnumSource(BrowserDriver.class)
+    public void longStoryShortSearchFail(BrowserDriver browserDriver) {
+        WebDriver driver = browserDriver.apply();
+        try {
+            LongStoryShortPage lssPage = new LongStoryShortPage(driver);
+
+            lssPage.open();
+
+            Assertions.assertTrue(lssPage.isLoaded());
+
+            lssPage.search(DEFAULT_CITIES[1]);
+
+            Assertions.assertThrows(TimeoutException.class, () -> lssPage.clickOnSearchResultCity("LED"));
         } finally {
             driver.quit();
         }
