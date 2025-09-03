@@ -4,6 +4,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 
+import java.time.Duration;
+
 public class MainPage extends AbstractPage {
 
     public static final String PAGE_URL = "https://www.aviasales.ru/";
@@ -19,6 +21,12 @@ public class MainPage extends AbstractPage {
     private final By submitButton = By.xpath("//button[@data-test-id='form-submit']");
 
     private final By ostrovokCheckbox = By.xpath("//label[@data-test-id='checkbox']");
+
+    // Profile
+    private final By profileButton = By.xpath("//button[@data-test-id='profile-button']");
+    private final By loginButton = By.xpath("//button[@data-test-id='login-button']");
+    private final By vkButton = By.xpath("//button[@data-test-id='method-button-vk']");
+    private final By settingsButton = By.xpath("//div[@data-test-id='text' and contains(text(), 'Настройки')]");
 
     public MainPage(WebDriver driver) {
         super(driver);
@@ -74,5 +82,20 @@ public class MainPage extends AbstractPage {
             Thread.sleep(1000);
         } catch (InterruptedException ignore) {}
         waitForElement(locator).sendKeys(Keys.TAB);
+    }
+
+    public void loginVkontakte() {
+        click(profileButton);
+        click(loginButton);
+        click(vkButton);
+
+        try {
+            Thread.sleep(Duration.ofMinutes(1).toMillis());
+        } catch (InterruptedException ignore) {}
+    }
+
+    public void toSettings() {
+        click(profileButton);
+        click(settingsButton);
     }
 }

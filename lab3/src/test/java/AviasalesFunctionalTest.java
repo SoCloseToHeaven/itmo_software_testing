@@ -11,7 +11,7 @@ public class AviasalesFunctionalTest {
     public static final String[] DEFAULT_CITIES = {"Санкт-Петербург", "Москва", "Сочи", "Калининград"};
     public static final String[] TEST_BASE_DATES = {"20.09.2025", "26.09.2025"};
 
-    // Test case 0: Open main page, check if it's being loaded
+    // Test case 1: Open main page, check if it's being loaded
     @ParameterizedTest
     @EnumSource(BrowserDriver.class)
     public void mainPageOpen(BrowserDriver browserDriver) {
@@ -27,7 +27,7 @@ public class AviasalesFunctionalTest {
         }
     }
 
-    // Test case 1: Open main page, search for avia ticket
+    // Test case 2: Open main page, search for avia ticket
     @ParameterizedTest
     @EnumSource(BrowserDriver.class)
     public void aviaTicketSearch(BrowserDriver browserDriver) {
@@ -54,7 +54,7 @@ public class AviasalesFunctionalTest {
         }
     }
 
-    // Test case 2: Open main page, multi search for avia tickets
+    // Test case 3: Open main page, multi search for avia tickets
     @ParameterizedTest
     @EnumSource(BrowserDriver.class)
     public void aviaTicketMultiSearch(BrowserDriver browserDriver) {
@@ -80,7 +80,7 @@ public class AviasalesFunctionalTest {
         }
     }
 
-    // Test case 3: Open hotels booking page, look for a hotel
+    // Test case 4: Open hotels booking page, look for a hotel
     @ParameterizedTest
     @EnumSource(BrowserDriver.class)
     public void bookingSearch(BrowserDriver browserDriver) {
@@ -98,7 +98,7 @@ public class AviasalesFunctionalTest {
         }
     }
 
-    // Test case 4: Long story short search place
+    // Test case 5: Long story short search place
     @ParameterizedTest
     @EnumSource(BrowserDriver.class)
     public void longStoryShortSearch(BrowserDriver browserDriver) {
@@ -118,7 +118,7 @@ public class AviasalesFunctionalTest {
         }
     }
 
-    // Test case 4: Long story short search place
+    // Test case 6: Long story short search place
     @ParameterizedTest()
     @EnumSource(BrowserDriver.class)
     public void longStoryShortSearchFail(BrowserDriver browserDriver) {
@@ -138,7 +138,7 @@ public class AviasalesFunctionalTest {
         }
     }
 
-    // Test case 5: Load favourites page and test navigation by pop up button
+    // Test case 7: Load favourites page and test navigation by pop up button
     @ParameterizedTest()
     @EnumSource(BrowserDriver.class)
     public void favouritesLikeButtonTest(BrowserDriver browserDriver) {
@@ -155,6 +155,32 @@ public class AviasalesFunctionalTest {
             MainPage mainPage = page.navigateToToMainPage();
 
             Assertions.assertTrue(mainPage.isLoaded());
+        } finally {
+            driver.quit();
+        }
+    }
+
+    // Test case 8: Load favourites page and test navigation by pop up button
+    @ParameterizedTest()
+    @EnumSource(BrowserDriver.class)
+    public void loginViaVkAndPersonalize(BrowserDriver browserDriver) {
+        WebDriver driver = browserDriver.apply();
+        try {
+            MainPage mainPage = new MainPage(driver);
+
+            mainPage.open();
+
+            Assertions.assertTrue(mainPage.isLoaded());
+
+            mainPage.loginVkontakte();
+
+            mainPage.toSettings();
+
+            SettingsPage settingsPage = new SettingsPage(driver);
+
+            Assertions.assertTrue(settingsPage.isLoaded());
+
+            settingsPage.checkIfAuthorizedViaVK();
         } finally {
             driver.quit();
         }
