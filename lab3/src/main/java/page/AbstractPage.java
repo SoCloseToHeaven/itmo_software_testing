@@ -46,7 +46,13 @@ public abstract class AbstractPage implements Page {
 
     protected void stealthType(By locator, String text) {
         var inputElement = waitForElement(locator);
-        inputElement.sendKeys(text);
+        try {
+            for (char i : text.toCharArray()) {
+                inputElement.sendKeys(String.valueOf(i));
+
+                Thread.sleep(100);
+            }
+        } catch (InterruptedException e) {}
     }
 
     protected void hoverOverElement(By locator) {

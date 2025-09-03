@@ -60,12 +60,6 @@ public class BookingPage extends AbstractPage {
     }
 
     private void selectCity(String city, By locator) {
-        try {
-            for (char i : city.toCharArray()) {
-                stealthType(locator, String.valueOf(i));
-
-                Thread.sleep(100);
-            }
-        } catch (InterruptedException e) {}
+        stealthType(locator, city);
     }
 }
