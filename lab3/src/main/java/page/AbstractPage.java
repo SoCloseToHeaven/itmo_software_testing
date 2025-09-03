@@ -14,6 +14,9 @@ import java.util.List;
 
 public abstract class AbstractPage implements Page {
 
+    // Cookies
+    protected final By acceptCookiesButton = By.xpath("//button[@data-test-id='accept-cookies-button']");
+
     protected final WebDriver driver;
     protected final Wait<WebDriver> wait;
 
@@ -39,6 +42,11 @@ public abstract class AbstractPage implements Page {
         var inputElement = waitForElement(locator);
         inputElement.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
         inputElement.sendKeys(text, Keys.ENTER);
+    }
+
+    protected void stealthType(By locator, String text) {
+        var inputElement = waitForElement(locator);
+        inputElement.sendKeys(text);
     }
 
     protected void hoverOverElement(By locator) {

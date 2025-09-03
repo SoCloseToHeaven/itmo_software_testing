@@ -9,8 +9,6 @@ public class MainPage extends AbstractPage {
     public static final String PAGE_URL = "https://www.aviasales.ru/";
 
 
-    // Cookies
-    private final By acceptCookiesButton = By.xpath("//button[@data-test-id='accept-cookies-button']");
     // Search bar elements
     private final By fromCity = By.xpath("//input[@id='avia_form_origin-input']");
     private final By toCity = By.xpath("//input[@id='avia_form_destination-input']");
