@@ -4,6 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.openqa.selenium.WebDriver;
 import page.BookingPage;
+import page.LongStoryShortPage;
 import page.MainPage;
 import page.SearchPage;
 
@@ -94,6 +95,26 @@ public class AviasalesFunctionalTest {
             Assertions.assertTrue(bookingPage.isLoaded());
 
             bookingPage.searchHotels(DEFAULT_CITIES[0], TEST_BASE_DATES[0], TEST_BASE_DATES[1]);
+        } finally {
+            driver.quit();
+        }
+    }
+
+    // Test case 4: Long story short search place
+    @ParameterizedTest
+    @EnumSource(BrowserDriver.class)
+    public void longStoryShortSearch(BrowserDriver browserDriver) {
+        WebDriver driver = browserDriver.apply();
+        try {
+            LongStoryShortPage lssPage = new LongStoryShortPage(driver);
+
+            lssPage.open();
+
+            Assertions.assertTrue(lssPage.isLoaded());
+
+            lssPage.search(DEFAULT_CITIES[0]);
+
+            lssPage.clickOnSearchResultCity("LED");
         } finally {
             driver.quit();
         }
