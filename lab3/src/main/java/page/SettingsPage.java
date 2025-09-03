@@ -7,7 +7,7 @@ public class SettingsPage extends AbstractPage {
 
     public static final String BASE_URL = "https://www.aviasales.ru/my/settings";
 
-    private final By darkThemeButton = By.xpath("//*[@id=':profile_settingsr1:']");
+    private final By darkThemeButton = By.xpath("//span[contains(text(), 'Тёмная')]");
     private final By loginViaVk = By.xpath("//div[contains(text(), 'Вы вошли через VK ID')]");
 
     public SettingsPage(WebDriver webDriver) {
@@ -17,6 +17,8 @@ public class SettingsPage extends AbstractPage {
     @Override
     public Page open() {
         driver.get(BASE_URL);
+
+        click(acceptCookiesButton);
 
         return this;
     }

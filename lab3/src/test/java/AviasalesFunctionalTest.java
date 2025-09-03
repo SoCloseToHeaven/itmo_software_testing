@@ -185,4 +185,23 @@ public class AviasalesFunctionalTest {
             driver.quit();
         }
     }
+
+    // Test case 9: Open settings menu and personalize
+    @ParameterizedTest()
+    @EnumSource(BrowserDriver.class)
+    public void settingsPersonalizationTest(BrowserDriver browserDriver) {
+        WebDriver driver = browserDriver.apply();
+        try {
+
+            SettingsPage settingsPage = new SettingsPage(driver);
+
+            settingsPage.open();
+
+            Assertions.assertTrue(settingsPage.isLoaded());
+
+            settingsPage.darkTheme();
+        } finally {
+            driver.quit();
+        }
+    }
 }
