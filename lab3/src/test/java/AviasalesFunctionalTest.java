@@ -4,10 +4,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import page.BookingPage;
-import page.LongStoryShortPage;
-import page.MainPage;
-import page.SearchPage;
+import page.*;
 
 public class AviasalesFunctionalTest {
 
@@ -136,6 +133,28 @@ public class AviasalesFunctionalTest {
             lssPage.search(DEFAULT_CITIES[1]);
 
             Assertions.assertThrows(TimeoutException.class, () -> lssPage.clickOnSearchResultCity("LED"));
+        } finally {
+            driver.quit();
+        }
+    }
+
+    // Test case 5: Load favourites page and test navigation by pop up button
+    @ParameterizedTest()
+    @EnumSource(BrowserDriver.class)
+    public void favouritesLikeButtonTest(BrowserDriver browserDriver) {
+        WebDriver driver = browserDriver.apply();
+        try {
+            FavouritesPage page = new FavouritesPage(driver);
+
+            page.open();
+
+            Assertions.assertTrue(page.isLoaded());
+
+            page.like();
+
+            MainPage mainPage = page.navigateToToMainPage();
+
+            Assertions.assertTrue(mainPage.isLoaded());
         } finally {
             driver.quit();
         }
