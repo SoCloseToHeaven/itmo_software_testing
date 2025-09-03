@@ -1,6 +1,7 @@
 package page;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -22,7 +23,7 @@ public abstract class AbstractPage implements Page {
     }
 
     protected void click(By locator) {
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
+        waitForElement(locator);
         wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
     }
 
@@ -36,7 +37,8 @@ public abstract class AbstractPage implements Page {
 
     protected void type(By locator, String text) {
         var inputElement = waitForElement(locator);
-        inputElement.sendKeys(text);
+        inputElement.sendKeys(Keys.chord(Keys.CONTROL,"a", Keys.DELETE));
+        inputElement.sendKeys(text, Keys.ENTER);
     }
 
     protected void hoverOverElement(By locator) {

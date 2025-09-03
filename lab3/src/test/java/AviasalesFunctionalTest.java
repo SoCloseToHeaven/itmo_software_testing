@@ -4,10 +4,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.openqa.selenium.WebDriver;
 import page.MainPage;
+import page.SearchPage;
 
 public class AviasalesFunctionalTest {
 
     public static final String[] DEFAULT_CITIES = {"Санкт-Петербург", "Москва", "Сочи", "Калининград"};
+    public static final String TEST_BASE_DATE = "20.09.2025";
 
     // Test case 0: Open main page, check if it's being loaded
     @ParameterizedTest
@@ -40,11 +42,13 @@ public class AviasalesFunctionalTest {
             var searchPage = mainPage.searchTickets(
                     DEFAULT_CITIES[1],
                     DEFAULT_CITIES[2],
-                    "05.09.2025",
-                    "05.09.2025"
+                    TEST_BASE_DATE,
+                    TEST_BASE_DATE
             );
 
             Assertions.assertTrue(searchPage.isLoaded());
+
+            searchPage.waitForRandomTicket();
         } finally {
             driver.quit();
         }
@@ -56,11 +60,21 @@ public class AviasalesFunctionalTest {
     public void aviaTicketMultiSearch(BrowserDriver browserDriver) {
         WebDriver driver = browserDriver.apply();
         try {
-            var result = new MainPage(driver)
-                    .open()
-                    .isLoaded();
+            SearchPage searchPage = new SearchPage(driver);
 
-            Assertions.assertTrue(result);
+            var result = searchPage.open();
+
+            Assertions.assertTrue(result.isLoaded());
+
+            searchPage = searchPage.multiSearchTickets(
+                    DEFAULT_CITIES[0],
+                    DEFAULT_CITIES[1],
+                    DEFAULT_CITIES[2],
+                    TEST_BASE_DATE,
+                    TEST_BASE_DATE
+            );
+
+            searchPage.waitForRandomTicket();
         } finally {
             driver.quit();
         }
