@@ -31,6 +31,8 @@ public class SearchPage extends AbstractPage {
     public Page open() {
         driver.get(PAGE_URL);
 
+        click(acceptCookiesButton);
+
         return this;
     }
 
